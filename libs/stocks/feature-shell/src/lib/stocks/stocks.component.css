@@ -1,3 +1,31 @@
 mat-form-field {
   display: block;
 }
+
+[aria-hidden='true'] {
+  display: none;
+}
+
+.error {
+  margin-top: -24px;
+  margin-bottom: 24px;
+  color: red;
+}
+
+.status-error {
+  margin: 24px 0;
+  border: 2px solid black;
+  padding: 12px;
+  border-color: red;
+  color: red;
+}
+
+.status-error button {
+  display: block;
+  border: 0;
+  color: red;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 12px;
+  font-size: 16px;
+}
