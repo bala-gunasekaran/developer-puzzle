@@ -3,6 +3,7 @@
  * This is only a minimal backend to get started.
  **/
 import { Server } from 'hapi';
+import { environment } from './environments/environment';
 
 const init = async () => {
   const server = new Server({
@@ -10,13 +11,41 @@ const init = async () => {
     host: 'localhost'
   });
 
+  const Wreck = require('wreck');
+
+  const getStockData = async (symbol: string, period: string) => {
+    try {
+      // GET Stock Data response
+      const { stockDataResponse, payload } = await Wreck.get(
+        `${environment.STOCK_DATA_URL}${symbol}/chart/${period}?token=${
+          environment.API_KEY
+        }`,
+        {
+          json: true
+        }
+      );
+      return payload;
+    } catch (error) {
+      return error;
+    }
+  };
+
+  server.method('getStockData', getStockData, {
+    cache: {
+      expiresIn: 10 * 3000,
+      generateTimeout: 10000
+    }
+  });
+
   server.route({
     method: 'GET',
-    path: '/',
-    handler: (request, h) => {
-      return {
-        hello: 'world'
-      };
+    path: '/api/v1/stockData',
+    handler: async request => {
+      const stockData = server.methods.getStockData(
+        request.query.symbol,
+        request.query.period
+      );
+      return stockData;
     }
   });
 
